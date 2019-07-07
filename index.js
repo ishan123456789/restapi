@@ -4,6 +4,7 @@
 const http = require('http');
 const url = require('url');
 const stringDecoder = require('string_decoder').stringDecoder; // Will help us get the payload if any
+const router = require('./router');
 
 let server = http.createServer((req, res) => {
     console.log('hello foo', req, res);
@@ -11,7 +12,7 @@ let server = http.createServer((req, res) => {
     let parsedURL = url.parse(req.url, true);
     
     let path = parsedURL.pathname.replace(/^\/+|\/$/gm, '');
-
+    console.log('Path', path);
     let method = req.method;
     console.log('method', method);
     var queryStringObject = parsedURL.query;
@@ -24,9 +25,15 @@ let server = http.createServer((req, res) => {
     req.on('data', (chunk) => buffer+=chunk);
     req.on('end', _ => {
         console.log('finalDataThatWas sent', buffer);
-        res.end('Got it?');
         console.log('parsedURL', path);
     });
+    console.log(router)
+    if(router[path]) router[path](req, res);
+    else router['404'](req, res);
 });
+let port = 3000;
+server.listen(port);
 
-server.listen(3000);
+server.on("listening", () => {
+    console.log(`listening on ${port}`);
+})
