@@ -5,6 +5,7 @@ const http = require('http');
 const url = require('url');
 const stringDecoder = require('string_decoder').stringDecoder; // Will help us get the payload if any
 const router = require('./router');
+const config = require('./config');
 
 let server = http.createServer((req, res) => {
     console.log('hello foo', req, res);
@@ -31,9 +32,9 @@ let server = http.createServer((req, res) => {
     if(router[path]) router[path](req, res);
     else router['404'](req, res);
 });
-let port = 3000;
+let port = config.port;
 server.listen(port);
 
 server.on("listening", () => {
-    console.log(`listening on ${port}`);
+    console.log(`listening on ${port} in ${config.envName} environment`);
 })
