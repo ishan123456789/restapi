@@ -6,17 +6,20 @@ let environment = {};
 
 environment.staging = {
     envName: "Staging",
-    port: 3000
+    httpPort: 3000,
+    httpsPort: 3001
 }
 
 environment.production = {
     envName: "Production",
-    port: 4000
+    httpPort: 4000,
+    httpsPort: 4001
 }
 
 environment.development = {
     envName: "Development",
-    port: 5000
+    httpPort: 5000,
+    httpsPort: 5001
 }
 
 let currentEnv = process.env.NODE_ENV ? process.env.NODE_ENV : 'development';

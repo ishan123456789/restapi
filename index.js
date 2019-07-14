@@ -1,13 +1,28 @@
 /**
  * Common dependencies import these are by default node packages and not installed through npm
  */
+const https = require('https');
 const http = require('http');
 const url = require('url');
 const stringDecoder = require('string_decoder').stringDecoder; // Will help us get the payload if any
 const router = require('./router');
 const config = require('./config');
+const fs = require('fs');
+const path = require('path');
 
-let server = http.createServer((req, res) => {
+/**
+ * These certs were generated for my system so won't help you
+ * To create one on your own follow
+ * https://reactpaths.com/how-to-get-https-working-in-localhost-development-environment-f17de34af046
+ */
+const options = {
+    hostname: "demo.local",
+    key: fs.readFileSync(path.normalize( __dirname + '/https/rootSSL.key')),
+    cert: fs.readFileSync(path.normalize( __dirname + "/https/rootSSL.crt")),
+    passphrase: '1234'
+};
+
+let unifiedServer = (req, res) => {
     console.log('hello foo', req, res);
 
     let parsedURL = url.parse(req.url, true);
@@ -31,10 +46,18 @@ let server = http.createServer((req, res) => {
     console.log(router)
     if(router[path]) router[path](req, res);
     else router['404'](req, res);
-});
-let port = config.port;
-server.listen(port);
+}
 
-server.on("listening", () => {
-    console.log(`listening on ${port} in ${config.envName} environment`);
+https
+.createServer(options, unifiedServer)
+.listen(config.httpsPort)
+.on("listening", () => {
+    console.log(`listening on https://localhost:${config.httpsPort} in ${config.envName} environment`);
 })
+
+http
+.createServer(unifiedServer)
+.listen(config.httpPort)
+.on("listening", () => {
+    console.log(`listening on http://localhost:${config.httpPort} in ${config.envName} environment`);
+});
