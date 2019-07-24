@@ -9,7 +9,17 @@ const router = require('./router');
 const config = require('./config');
 const fs = require('fs');
 const path = require('path');
+const dH = require('./lib/data');
 
+(async () => {
+    try {
+        let state = await dH.delete('test','testFile',{foo: 'bar1'});
+        console.log('File create', state);
+    } catch(e) {
+        console.log("Error", e);
+    }
+
+})();
 /**
  * These certs were generated for my system so won't help you
  * To create one on your own follow
@@ -18,7 +28,7 @@ const path = require('path');
 const options = {
     hostname: "demo.local",
     key: fs.readFileSync(path.normalize( __dirname + '/https/rootSSL.key')),
-    cert: fs.readFileSync(path.normalize( __dirname + "/https/rootSSL.crt")),
+    cert: fs.readFileSync(path.normalize( __dirname + "/https/rootSSL.pem")),
     passphrase: '1234'
 };
 
