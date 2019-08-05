@@ -19,10 +19,16 @@ let router = {
             badResponse(req, res);
         }
     },
+    user: (req, res) => {
+        require('./routes/user')(req, res);
+    },
     404: (req, res) => {
-        console.log('Got in router')
         res.writeHead(404);
         res.end('Route not found');
+    },
+    405: (req, res) => {
+        res.writeHead(405);
+        res.end('Method not allowed');
     }
 }
 
